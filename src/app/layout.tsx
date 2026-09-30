@@ -35,6 +35,11 @@ export const metadata: Metadata = {
     apple: [{ url: "/icon.svg" }],
   },
   manifest: "/manifest.webmanifest",
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION
+      ? process.env.GOOGLE_SITE_VERIFICATION
+      : "_f_aZJUehW4F0xYXgrZ2AV1kA6VhAMe-10xdMtaV3HY",
+  },
   robots: {
     index: true,
     follow: true,
