@@ -5,13 +5,13 @@ import { useEffect, useState } from "react";
 
 import { Fade, Flex, Line, Row, ToggleButton } from "@once-ui-system/core";
 
-import { routes, display, person, about, blog, work, gallery } from "@/resources";
-import { ThemeToggle } from "./ThemeToggle";
+import { about, display, person, routes, services, work } from "@/resources";
 import styles from "./Header.module.scss";
+import { ThemeToggle } from "./ThemeToggle";
 
 type TimeDisplayProps = {
   timeZone: string;
-  locale?: string; // Optionally allow locale, defaulting to 'en-GB'
+  locale?: string;
 };
 
 const TimeDisplay: React.FC<TimeDisplayProps> = ({ timeZone, locale = "en-GB" }) => {
@@ -27,8 +27,7 @@ const TimeDisplay: React.FC<TimeDisplayProps> = ({ timeZone, locale = "en-GB" })
         second: "2-digit",
         hour12: false,
       };
-      const timeString = new Intl.DateTimeFormat(locale, options).format(now);
-      setCurrentTime(timeString);
+      setCurrentTime(new Intl.DateTimeFormat(locale, options).format(now));
     };
 
     updateTime();
@@ -55,6 +54,7 @@ export const Header = () => {
         position="fixed"
         bottom="0"
         to="top"
+        className={styles.position}
         height="80"
         zIndex={9}
       />
@@ -73,7 +73,7 @@ export const Header = () => {
         }}
       >
         <Row paddingLeft="12" fillWidth vertical="center" textVariant="body-default-s">
-          {display.location && <Row s={{ hide: true }}>{person.location}</Row>}
+          {display.location && <Row s={{ hide: true }}>{person.locationLabel}</Row>}
         </Row>
         <Row fillWidth horizontal="center">
           <Row
@@ -128,40 +128,21 @@ export const Header = () => {
                   </Row>
                 </>
               )}
-              {/* {routes["/blog"] && (
+              {routes["/services"] && (
                 <>
                   <Row s={{ hide: true }}>
                     <ToggleButton
-                      prefixIcon="book"
-                      href="/blog"
-                      label={blog.label}
-                      selected={pathname.startsWith("/blog")}
+                      prefixIcon="services"
+                      href="/services"
+                      label={services.label}
+                      selected={pathname.startsWith("/services")}
                     />
                   </Row>
                   <Row hide s={{ hide: false }}>
                     <ToggleButton
-                      prefixIcon="book"
-                      href="/blog"
-                      selected={pathname.startsWith("/blog")}
-                    />
-                  </Row>
-                </>
-              )} */}
-              {routes["/gallery"] && (
-                <>
-                  <Row s={{ hide: true }}>
-                    <ToggleButton
-                      prefixIcon="gallery"
-                      href="/gallery"
-                      label={gallery.label}
-                      selected={pathname.startsWith("/gallery")}
-                    />
-                  </Row>
-                  <Row hide s={{ hide: false }}>
-                    <ToggleButton
-                      prefixIcon="gallery"
-                      href="/gallery"
-                      selected={pathname.startsWith("/gallery")}
+                      prefixIcon="services"
+                      href="/services"
+                      selected={pathname.startsWith("/services")}
                     />
                   </Row>
                 </>

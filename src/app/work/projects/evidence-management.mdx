@@ -1,7 +1,22 @@
 ---
 title: "Evidence Management System"
+summary: "A secure Django web application for submitting digital evidence — images, video, audio and documents — directly to police departments, with role-based access, messaging and full audit logging."
 publishedAt: "2024-04-08"
-summary: "A secure web-based system that allows users to upload, manage, and submit digital evidence directly to law enforcement for review and follow-up."
+role: "Full Stack Developer"
+category: "Secure web application"
+tags:
+  - Python
+  - Django
+  - SQLite
+  - Tailwind CSS
+  - JavaScript
+keywords:
+  - digital evidence management system
+  - secure file upload django
+  - police evidence submission portal
+  - role based access control web app
+  - audit logging django application
+image: "/images/projects/project-06/cover-01.png"
 images:
   - "/images/projects/project-06/cover-01.png"
   - "/images/projects/project-06/cover-02.png"
@@ -9,35 +24,69 @@ images:
   - "/images/projects/project-06/cover-04.png"
   - "/images/projects/project-06/cover-05.png"
   - "/images/projects/project-06/cover-06.png"
-team:
-  
 ---
 
-## Overview
+## The problem
 
-Development of a secure and user-friendly Evidence Management System that enables individuals to upload, organize, and securely transfer digital evidence to law enforcement agencies. The system streamlines the process of reporting incidents and improves communication between citizens and police departments.
+Reporting an incident online meant photographing evidence and hoping the right department saw it.
+Files were sent over chat apps and email, arrived out of context, and there was no record of who
+handled them or when.
 
-## Key Features
+The brief was a channel where a citizen submits evidence directly to a police department, where
+staff can review and respond, and where every action is recorded.
 
-- **Evidence Upload & Management**: Users can upload images, videos, documents, and audio files, and organize them with titles, descriptions, and timestamps.
-- **Secure Submission to Police**: Allows users to securely send evidence to registered police departments for official review.
-- **Police Dashboard**: A dedicated interface for police officers to view, filter, and manage submitted evidence.
-- **User–Police Communication**: Built-in messaging system that allows police to contact users for additional information or clarification.
-- **Access Control & Permissions**: Role-based access control for users and police staff to ensure data privacy and system security.
-- **Audit Logs**: Tracks all actions performed within the system for transparency and accountability.
+## What I built
 
-## Technologies Used
+A Django application built around one principle: evidence is sensitive, and every design decision
+followed from that.
 
-- **Django**: Backend framework for building secure and scalable server-side logic.
-- **JavaScript**: Used for interactive front-end behavior and client-side validations.
-- **SQLite**: Lightweight relational database used for storing users, evidence records, and activity logs.
-- **Tailwind CSS**: Utility-first CSS framework for building a responsive and modern user interface.
-- **jQuery**: Used for AJAX-based interactions and dynamic UI updates.
+**Evidence upload and management** — users upload images, video, audio and documents, organised
+with titles, descriptions and timestamps so an item is identifiable months later.
 
-## Challenges and Learnings
+**Secure submission to police** — evidence is sent to a registered department and enters their
+review queue rather than sitting in a personal account.
 
-One of the main challenges was handling secure file uploads and ensuring the privacy of sensitive evidence. This was addressed by implementing proper file validation, encryption strategies, and strict access control. Another key learning was designing workflows that balance user ease-of-use with the procedural requirements of law enforcement operations.
+**Police dashboard** — officers view, filter and manage submitted evidence in a dedicated
+interface, with the review state recorded against each item.
+
+**User-to-police messaging** — a built-in thread lets officers ask for clarification and lets
+users respond, keeping the conversation attached to the case instead of scattered across inboxes.
+
+**Access control and permissions** — role-based access separates citizens from police staff.
+Authorisation is enforced server-side on every endpoint, never only hidden in the interface.
+
+**Audit logs** — every action is recorded with actor, timestamp and target, giving accountability
+that survives staff changes.
+
+## Tech stack
+
+| Layer | Choice | Why |
+| --- | --- | --- |
+| Backend | Django, Python | Strong built-in auth and permission primitives, which is most of what a secure evidence system needs |
+| Database | SQLite | Lightweight and appropriate for the deployment size, keeping the operational surface small for a non-technical team |
+| Front-end | Tailwind CSS, JavaScript | Responsive layout and AJAX interactions without a framework overhead on a forms-heavy application |
+| Dynamic UI | jQuery | AJAX-driven evidence submission and live status updates |
+
+## Challenges and learnings
+
+Secure file upload was the central problem. Accepting arbitrary files from the public internet
+means validating type and content rather than trusting the extension, isolating storage from
+execution, and never serving uploaded content in a way that lets it run. Layered validation,
+restricted storage paths and serving every file as a download rather than inline removed most of
+the risk — a lesson that shaped the storage layer completely.
+
+Designing workflows was the second challenge, and the less technical one. The system had to be
+genuinely easy for a stressed member of the public and equally clear for an officer reviewing
+dozens of submissions. Every extra step produced drop-off, so the interface was reduced to the
+minimum that kept evidence, context and consent together.
+
+Audit logging turned out to be a design input rather than a feature to add at the end. Logging at
+the model layer rather than in views meant no code path could quietly skip it, which is a
+guarantee that view-level logging cannot offer.
 
 ## Outcome
 
-The system successfully streamlined the process of evidence submission and review, reducing manual handling and improving response times. It enhanced cooperation between the public and law enforcement, while maintaining strong data security and system reliability.
+Delivered in **April 2024**. Evidence submission moved from scattered file transfers into a
+reviewable process, communication stayed attached to the case, and every action on every piece of
+evidence is traceable — improving cooperation between the public and law enforcement without
+weakening data protection.

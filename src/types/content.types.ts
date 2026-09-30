@@ -1,5 +1,5 @@
-import { IconName } from "@/resources/icons";
-import { zones } from "tzdata";
+import type { IconName } from "@/resources/icons";
+import type { zones } from "tzdata";
 
 /**
  * IANA time zone string (e.g., 'Asia/Calcutta', 'Europe/Vienna').
@@ -17,29 +17,22 @@ export type Person = {
   lastName: string;
   /** The name you want to display, allows variations like nicknames */
   name: string;
-  /** Role or job title */
+  /** Role or job title — used for SEO titles and Person schema */
   role: string;
+  /** Short professional headline used on the home page and social cards */
+  headline: string;
   /** Path to avatar image */
   avatar: string;
   /** Email address */
   email: string;
+  /** Phone number in international format, without the leading `+` */
+  phone: string;
   /** IANA time zone location */
   location: IANATimeZone;
+  /** Human readable city/country, used for local SEO */
+  locationLabel: string;
   /** Languages spoken */
   languages?: string[];
-};
-
-/**
- * Newsletter Section
- * @description The below information will be displayed on the Home page in Newsletter block
- */
-export type Newsletter = {
-  /** Whether to display the newsletter section */
-  display: boolean;
-  /** Title of the newsletter   */
-  title: React.ReactNode;
-  /** Description of the newsletter */
-  description: React.ReactNode;
 };
 
 /**
@@ -74,10 +67,12 @@ export interface BasePageConfig {
   path: `/${string}` | string;
   /** Label for navigation or display */
   label: string;
-  /** Title of the page */
+  /** Title of the page — rendered as `<title> | Noman Ejaz` in the browser */
   title: string;
   /** Description for SEO and metadata */
   description: string;
+  /** Meta keywords — supplements, never replaces, on-page content */
+  keywords?: string[];
   /** OG Image should be put inside `public/images` folder */
   image?: `/images/${string}` | string;
 }
@@ -101,11 +96,25 @@ export interface Home extends BasePageConfig {
   };
   /** The sub text which appears below the headline */
   subline: React.ReactNode;
+  /** Short "what I do" capability list, rendered under the hero */
+  capabilities: {
+    title: string;
+    items: Array<{
+      title: string;
+      description: string;
+      tags: string[];
+    }>;
+  };
+  /** Social proof / trust numbers shown under the capability list */
+  stats: {
+    title: string;
+    items: Array<{ value: string; label: string }>;
+  };
 }
 
 /**
  * About page configuration.
- * @description Configuration for the About page, including sections for table of contents, avatar, calendar, introduction, work experience, studies, and technical skills.
+ * @description Configuration for the About page, including sections for table of contents, avatar, introduction, work experience, studies, and technical skills.
  */
 export interface About extends BasePageConfig {
   /** Table of contents configuration */
@@ -119,13 +128,6 @@ export interface About extends BasePageConfig {
   avatar: {
     /** Whether to display the avatar */
     display: boolean;
-  };
-  /** Calendar section configuration */
-  calendar: {
-    /** Whether to display the calendar */
-    display: boolean;
-    /** Link to the calendar */
-    link: string;
   };
   /** Introduction section */
   intro: {
@@ -150,6 +152,8 @@ export interface About extends BasePageConfig {
       timeframe: string;
       /** Role or job title */
       role: string;
+      /** Short one line summary shown next to the role */
+      summary?: string;
       /** Achievements at the company */
       achievements: React.ReactNode[];
       /** Images related to the experience */
@@ -209,32 +213,81 @@ export interface About extends BasePageConfig {
       }>;
     }>;
   };
+  /** Frequently asked questions — rendered as FAQPage structured data */
+  faq: {
+    /** Whether to display the FAQ section */
+    display: boolean;
+    /** Title for the FAQ section */
+    title: string;
+    /** Question and answer pairs */
+    items: Array<{
+      question: string;
+      answer: string;
+    }>;
+  };
 }
 
 /**
- * Blog page configuration.
- * @description Configuration for the Blog page, including metadata and navigation label.
+ * Services page configuration.
+ * @description Targeting commercial-intent keywords such as "hire full stack developer".
  */
-export interface Blog extends BasePageConfig {}
+export interface Services extends BasePageConfig {
+  /** Short intro rendered under the page heading */
+  intro: React.ReactNode;
+  /** Grouped list of services, each rendered as its own anchored section */
+  groups: Array<{
+    /** Anchor id, also used in the table of contents */
+    id: string;
+    /** Service title */
+    title: string;
+    /** One sentence explaining the service */
+    description: string;
+    /** Concrete deliverables / technologies covered */
+    items: string[];
+  }>;
+  /** Engagement process steps */
+  process: {
+    /** Whether to display the process section */
+    display: boolean;
+    /** Anchor id for the process section */
+    id: string;
+    /** Title for the process section */
+    title: string;
+    /** Ordered steps */
+    steps: Array<{
+      title: string;
+      description: string;
+    }>;
+  };
+  /** Closing call to action */
+  cta: {
+    /** Anchor id for the call to action section */
+    id: string;
+    title: string;
+    description: string;
+    label: string;
+    href: string;
+  };
+  /** Frequently asked questions — rendered as FAQPage structured data */
+  faq: {
+    /** Whether to display the FAQ section */
+    display: boolean;
+    /** Anchor id for the FAQ section */
+    id: string;
+    /** Title for the FAQ section */
+    title: string;
+    /** Question and answer pairs */
+    items: Array<{
+      question: string;
+      answer: string;
+    }>;
+  };
+}
 
 /**
  * Work/projects page configuration.
- * @description Configuration for the Work/Projects page, including metadata and navigation label.
  */
-export interface Work extends BasePageConfig {}
-
-/**
- * Gallery page configuration.
- * @description Configuration for the Gallery page, including metadata, navigation label, and image list.
- */
-export interface Gallery extends BasePageConfig {
-  /** List of images in the gallery */
-  images: Array<{
-    /** Image source path */
-    src: string;
-    /** Image alt text */
-    alt: string;
-    /** Image orientation (horizontal/vertical) */
-    orientation: string;
-  }>;
+export interface Work extends BasePageConfig {
+  /** Short intro rendered under the page heading */
+  intro: React.ReactNode;
 }

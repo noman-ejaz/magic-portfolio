@@ -3,28 +3,74 @@ import "@once-ui-system/core/css/tokens.css";
 import "@/resources/custom.css";
 
 import classNames from "classnames";
+import type { Metadata, Viewport } from "next";
 
-import {
-  Background,
-  Column,
-  Flex,
-  Meta,
-  opacity,
-  RevealFx,
-  SpacingToken,
-} from "@once-ui-system/core";
-import { Footer, Header, RouteGuard, Providers } from "@/components";
-import { baseURL, effects, fonts, style, dataStyle, home } from "@/resources";
+import { Footer, Header, Providers } from "@/components";
+import { dataStyle, effects, fonts, home, person, style } from "@/resources";
+import { absoluteUrl, socialImage } from "@/utils/seo";
+import type { SpacingToken, opacity } from "@once-ui-system/core";
+import { Background, Column, Flex, RevealFx } from "@once-ui-system/core";
 
-export async function generateMetadata() {
-  return Meta.generate({
+const siteImage = socialImage(home.title, home.image);
+
+export const metadata: Metadata = {
+  metadataBase: new URL(absoluteUrl()),
+  title: {
+    default: home.title,
+    template: `%s | ${person.name}`,
+  },
+  description: home.description,
+  keywords: home.keywords,
+  authors: [{ name: person.name, url: absoluteUrl("/about") }],
+  creator: person.name,
+  publisher: person.name,
+  applicationName: `${person.name} Portfolio`,
+  category: "technology",
+  alternates: {
+    canonical: absoluteUrl("/"),
+  },
+  formatDetection: { telephone: false },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/icon.svg" }],
+  },
+  manifest: "/manifest.webmanifest",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    url: absoluteUrl(),
+    siteName: `${person.name} | Full Stack Developer`,
+    locale: "en_US",
     title: home.title,
     description: home.description,
-    baseURL: baseURL,
-    path: home.path,
-    image: home.image,
-  });
-}
+    images: [{ url: siteImage, width: 1280, height: 720, alt: home.title }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: home.title,
+    description: home.description,
+    images: [siteImage],
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fcfcfc" },
+    { media: "(prefers-color-scheme: dark)", color: "#08090a" },
+  ],
+};
 
 export default async function RootLayout({
   children,
@@ -158,8 +204,8 @@ export default async function RootLayout({
           <Flex fillWidth minHeight="16" s={{ hide: true }} />
           <Header />
           <Flex zIndex={0} fillWidth padding="l" horizontal="center" flex={1}>
-            <Flex horizontal="center" fillWidth minHeight="0">
-              <RouteGuard>{children}</RouteGuard>
+            <Flex horizontal="center" fillWidth minHeight={0}>
+              {children}
             </Flex>
           </Flex>
           <Footer />

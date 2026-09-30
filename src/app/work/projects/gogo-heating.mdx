@@ -1,35 +1,80 @@
 ---
 title: "GoGo Heating Services"
+summary: "A local SEO-focused service website for a heating and boiler company with online booking, quote request forms, service pages and spam-protected contact forms built in WordPress."
 publishedAt: "2024-11-15"
-summary: "A professional service website for heating and boiler services, offering online booking, service management, and customer inquiry features."
+role: "Web Developer"
+category: "Service website"
+tags:
+  - WordPress
+  - SEO
+  - JavaScript
+keywords:
+  - boiler installation booking website
+  - heating services business website
+  - wordpress service business site
+  - local SEO for tradespeople
+  - online quote request form website
+image: "/images/projects/project-07/cover-01.png"
 images:
   - "/images/projects/project-07/cover-01.png"
   - "/images/projects/project-07/cover-02.png"
   - "/images/projects/project-07/cover-03.png"
   - "/images/projects/project-07/cover-04.png"
-team:
 ---
 
-## Overview
+## The problem
 
-Development of a service-focused website that provides heating, boiler installation, and maintenance services. The platform was designed to help customers easily book services online and connect with technicians through a clean and user-friendly interface.
+A heating and boiler company was winning work entirely through word of mouth. The phone rang
+when it rang, which meant no visibility, no record of enquiries, and no way to know which
+services people were actually looking for.
 
-## Key Features
+They needed enquiries to arrive on their own, at any hour, without staff answering a phone — and
+they needed the site to be findable by people searching locally.
 
-- **Online Booking System**: Customers can schedule appointments for heating and boiler services directly through the website.
-- **Service Management Pages**: Dedicated pages for boiler installation, boiler repairs, and routine maintenance services.
-- **Contact & Inquiry Forms**: Built-in forms for customer inquiries and quote requests.
-- **Mobile-Responsive Design**: Optimized for mobile, tablet, and desktop devices to ensure accessibility across all devices.
-- **SEO Optimization**: Structured content for better visibility on search engines.
+## What I built
 
-## Technologies Used
+A service website built around the jobs they actually want booked, not around company history.
 
-- **WordPress**: Content management system used to build and manage the website.
+**Online booking** — customers schedule a heating or boiler appointment directly, so an enquiry
+becomes a booked job rather than a missed call.
 
-## Challenges and Learnings
+**Dedicated service pages** — separate pages for boiler installation, repair and maintenance,
+each targeting the specific search a customer makes at the moment of need.
 
-A key challenge was building a smooth and reliable booking experience while keeping the admin management simple. This project improved knowledge of WordPress plugin configuration, performance optimization, and securing contact forms against spam and unauthorized access.
+**Quote and contact forms** — built-in enquiry forms with server-side validation, so submissions
+are usable and spam is filtered before it reaches the inbox.
+
+**Mobile-first responsive design** — most local searches happen on a phone, often while standing
+in a cold house, so the booking path is the shortest path on the site.
+
+**SEO foundation** — structured page content, service-specific pages, local signals and clean
+metadata, so the site is discoverable for the searches that convert.
+
+## Tech stack
+
+| Layer | Choice | Why |
+| --- | --- | --- |
+| CMS | WordPress | The business needs to edit service pages and pricing themselves without a developer, and the local search results for this trade reward a properly structured content site |
+| Front-end | JavaScript | Progressive enhancement for the booking flow and form validation |
+| SEO | Technical on-page SEO | Structured data, per-service metadata and fast load times on mobile |
+
+## Challenges and learnings
+
+The main challenge was making booking reliable while keeping site editing simple. The first
+version coupled the booking flow tightly to the CMS, which made both harder to maintain — editing
+content risked breaking submissions, and changing the booking logic required touching templates.
+Rebuilding it as a self-contained flow, with the CMS responsible only for content, fixed that and
+made the whole site far easier for the business to run.
+
+Contact form spam was the other recurring issue. Relying on a single honeypot field was not
+enough, so validation, rate limiting and a challenge step were combined. Volume dropped sharply
+without losing genuine enquiries.
+
+Performance work mattered more than expected. On mobile connections the difference between a
+heavily themed page and a stripped-back one is the difference between a booking and a bounce.
 
 ## Outcome
 
-The website was successfully completed in **November 2024**, helping the business streamline customer inquiries and manage service bookings efficiently. It improved customer engagement and made it easier for clients to book heating and boiler services online.
+Delivered in **November 2024**. Enquiries now arrive directly and are scheduled rather than
+played back over the phone, the business can update its own service pages, and the site is
+visible for the local searches that drive emergency and installation work.

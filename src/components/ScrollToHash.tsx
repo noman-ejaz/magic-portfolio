@@ -1,11 +1,12 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export function ScrollToHash() {
-  const router = useRouter();
+  const pathname = usePathname();
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname must re-trigger the scroll on client-side navigation
   useEffect(() => {
     // Get the hash from the URL
     const hash = window.location.hash;
@@ -17,7 +18,7 @@ export function ScrollToHash() {
         element.scrollIntoView({ behavior: "smooth" });
       }
     }
-  }, [router]);
+  }, [pathname]);
 
   return null;
 }

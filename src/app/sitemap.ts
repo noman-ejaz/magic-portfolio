@@ -1,25 +1,40 @@
-import { getPosts } from "@/utils/utils";
-import { baseURL, routes as routesConfig } from "@/resources";
+import { routes as routesConfig } from "@/resources";
+import { absoluteUrl } from "@/utils/seo";
+import { getProjects } from "@/utils/utils";
+import type { MetadataRoute } from "next";
 
-export default async function sitemap() {
-  const blogs = getPosts(["src", "app", "blog", "posts"]).map((post) => ({
-    url: `${baseURL}/blog/${post.slug}`,
-    lastModified: post.metadata.publishedAt,
+/** Static routes get hand-tuned crawl signals; everything else is derived. */
+const staticRouteMeta: Record<
+  string,
+  { priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }
+> = {
+  "/": { priority: 1, changeFrequency: "monthly" },
+  "/services": { priority: 0.9, changeFrequency: "monthly" },
+  "/work": { priority: 0.9, changeFrequency: "monthly" },
+  "/about": { priority: 0.8, changeFrequency: "yearly" },
+};
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const today = new Date();
+
+  const staticRoutes = Object.entries(routesConfig)
+    .filter(([, enabled]) => enabled)
+    .map(([route]) => {
+      const meta = staticRouteMeta[route] ?? { priority: 0.5, changeFrequency: "monthly" };
+      return {
+        url: absoluteUrl(route),
+        lastModified: today,
+        changeFrequency: meta.changeFrequency,
+        priority: meta.priority,
+      };
+    });
+
+  const projects = getProjects().map((project) => ({
+    url: absoluteUrl(`/work/${project.slug}`),
+    lastModified: new Date(project.metadata.publishedAt),
+    changeFrequency: "yearly" as const,
+    priority: 0.7,
   }));
 
-  const works = getPosts(["src", "app", "work", "projects"]).map((post) => ({
-    url: `${baseURL}/work/${post.slug}`,
-    lastModified: post.metadata.publishedAt,
-  }));
-
-  const activeRoutes = Object.keys(routesConfig).filter(
-    (route) => routesConfig[route as keyof typeof routesConfig],
-  );
-
-  const routes = activeRoutes.map((route) => ({
-    url: `${baseURL}${route !== "/" ? route : ""}`,
-    lastModified: new Date().toISOString().split("T")[0],
-  }));
-
-  return [...routes, ...blogs, ...works];
+  return [...staticRoutes, ...projects];
 }

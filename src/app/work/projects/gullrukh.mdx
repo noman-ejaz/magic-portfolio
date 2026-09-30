@@ -1,39 +1,87 @@
 ---
 title: "GullRukh"
+summary: "A custom eCommerce platform built with Flask and PostgreSQL featuring product variants, filtering and search, cart and checkout, and a full admin dashboard for inventory and orders."
 publishedAt: "2025-01-10"
-summary: "A customized eCommerce platform designed to deliver a personalized shopping experience with flexible product management and smooth checkout workflows."
+role: "Full Stack Developer"
+category: "eCommerce platform"
+tags:
+  - Python
+  - Flask
+  - PostgreSQL
+  - Bootstrap
+keywords:
+  - flask ecommerce website
+  - custom ecommerce platform python
+  - product variant management
+  - online shopping cart checkout
+  - postgres inventory management
+image: "/images/projects/project-03/cover-01.png"
 images:
   - "/images/projects/project-03/cover-01.png"
   - "/images/projects/project-03/cover-02.png"
   - "/images/projects/project-03/cover-03.png"
   - "/images/projects/project-03/cover-04.png"
-team:
-  
 ---
 
-## Overview
+## The problem
 
-Development of a customized eCommerce platform tailored to specific business needs, focusing on performance, usability, and scalable architecture. The platform was built to offer a seamless shopping journey while giving administrators full control over products, orders, and customer interactions.
+An off-the-shelf store was being asked to do things it was not designed for: pricing rules that
+depend on combinations of attributes, and inventory that had to stay accurate across several
+sales channels at once. Every workaround added another plugin, and the storefront was getting
+slower with each one.
 
-## Key Features
+The client wanted a platform built around their actual catalogue rules rather than a template
+fitted to them.
 
-- **Custom Product Management**: Dynamic product creation with variants such as sizes, colors, and pricing rules.
-- **Personalized Shopping Experience**: User-friendly interface with custom filters, search, and recommendations.
-- **Shopping Cart & Checkout**: Secure cart handling and streamlined checkout process.
-- **Order & Inventory Management**: Real-time tracking of stock levels and order statuses.
-- **Admin Dashboard**: Custom admin panel for managing products, users, and system configurations.
-- **Secure Authentication**: User login and session handling for secure transactions.
+## What I built
 
-## Technologies Used
+A Flask eCommerce application where the product model is the source of truth for both the
+storefront and the admin panel.
 
-- **Flask**: Lightweight Python backend framework for building fast and scalable web services.
-- **Bootstrap**: For responsive and mobile-first UI design.
-- **PostgreSQL**: Relational database for reliable and structured data storage.
+**Product management with variants** — products carry variants across size, colour and price, with
+rules applied at the variant level rather than as special cases in the interface.
 
-## Challenges and Learnings
+**Filtering and search** — customers narrow the catalogue by attributes, and results reflect the
+same indexed data the admin panel edits, so the storefront can never disagree with the inventory.
 
-A major challenge was optimizing database queries and managing complex product relationships. This project strengthened skills in schema design, performance tuning, and building secure authentication flows with Flask.
+**Cart and checkout** — cart state is server-side, which keeps pricing correct across devices and
+survives a shared link.
+
+**Order and inventory management** — stock levels and order statuses update together. Stock cannot
+be sold twice, and every transition is auditable.
+
+**Admin dashboard** — products, users, orders and configuration managed from one custom panel
+rather than a host of plugins.
+
+**Secure authentication** — login, session handling and permission boundaries reviewed explicitly,
+because an admin panel is the highest-value target on an eCommerce system.
+
+## Tech stack
+
+| Layer | Choice | Why |
+| --- | --- | --- |
+| Backend | Flask, Python | Lightweight and explicit routing suits a request-response storefront, without framework machinery the project does not need |
+| Database | PostgreSQL | Product variants and stock are relational data with strict integrity requirements |
+| Front-end | Bootstrap | Consistent responsive components across catalogue, cart and a large admin surface |
+
+## Challenges and learnings
+
+The main difficulty was schema design for variants. The first model flattened every attribute
+into its own column, which broke the moment the catalogue needed a third variation axis. Moving to
+a proper variant and attribute-value structure took longer up front and paid for itself
+immediately — adding a new axis became configuration instead of a migration.
+
+Query performance was the second problem. Filtering across several attributes produced a join per
+filter, and unindexed it degraded quickly as the catalogue grew. Composite indexes on the filter
+columns and a denormalised read view for the catalogue page fixed it without giving up
+correctness at write time.
+
+Cart handling taught the most about correctness under concurrency. Moving cart state to the server
+and making checkout a single transaction, rather than several optimistic updates, eliminated the
+double-spend class of bugs entirely.
 
 ## Outcome
 
-The platform was successfully delivered in **early 2025**, providing a stable, scalable, and customizable eCommerce solution. It improved business operations, enhanced customer experience, and supported future growth through its flexible architecture.
+Delivered in **early 2025**. The business runs its own catalogue and pricing rules without plugin
+workarounds, storefront pages stay fast as the range grows, and the admin panel covers the
+operations the previous stack could not.

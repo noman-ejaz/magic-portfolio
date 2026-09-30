@@ -1,39 +1,89 @@
 ---
 title: "Luna Uniti"
+summary: "A blockchain-based transaction platform combining Flask APIs, React and PostgreSQL to handle secure, auditable digital transactions with smart contract integration and real-time activity visualisation."
 publishedAt: "2023-12-20"
-summary: "A blockchain-based platform for secure, transparent, and decentralized operations, integrating smart transaction handling and user management."
+role: "Full Stack Developer"
+category: "Blockchain application"
+tags:
+  - Python
+  - Flask
+  - React
+  - PostgreSQL
+keywords:
+  - blockchain transaction platform
+  - smart contract integration web app
+  - flask react blockchain api
+  - real time blockchain dashboard
+  - auditable transaction system
+image: "/images/projects/project-05/cover-01.png"
 images:
   - "/images/projects/project-05/cover-01.png"
   - "/images/projects/project-05/cover-02.png"
   - "/images/projects/project-05/cover-03.png"
   - "/images/projects/project-05/cover-04.png"
-team:
-  
 ---
 
-## Overview
+## The problem
 
-Development of a blockchain-based system that ensures secure, transparent, and decentralized handling of digital transactions and records. The platform combines Flask for backend APIs, React.js for a responsive front-end, and PostgreSQL for reliable data storage.
+Organisations adopting blockchain usually do not need the chain itself — they need the
+transactions on it to be trustworthy and reviewable. The hard engineering is rarely the contract
+logic; it is keeping a web application consistent with an append-only ledger that cannot be
+corrected.
 
-## Key Features
+The brief was an interface and API layer where every transaction is verifiable, every action is
+recorded, and the off-chain application data stays consistent with what the ledger says.
 
-- **Decentralized Transaction Management**: Facilitates secure transactions using blockchain principles, ensuring transparency and immutability.
-- **User Dashboard**: Interactive front-end for users to monitor their transactions and blockchain activity.
-- **Smart Contract Integration**: Supports programmable rules and automated workflows for transactions.
-- **Secure Authentication & Authorization**: Role-based access control for users and administrators.
-- **Real-Time Data Visualization**: Graphical representation of blockchain activity and system metrics.
-- **Audit Trail**: Complete logging of all actions to ensure accountability and traceability.
+## What I built
 
-## Technologies Used
+A Flask and React system where the blockchain layer is authoritative for transaction state and
+the application layer handles everything around it.
 
-- **Flask**: Python-based backend framework for building secure APIs and handling blockchain logic.
-- **React.js**: Front-end library for building dynamic and responsive user interfaces.
-- **PostgreSQL**: Relational database for structured and reliable data storage.
+**Transaction management** — transactions follow blockchain principles of transparency and
+immutability. Once recorded, a transaction cannot be silently edited; corrections are new
+transactions.
 
-## Challenges and Learnings
+**User dashboard** — a responsive front-end for monitoring transactions and account activity,
+built in React and backed by Flask APIs.
 
-One key challenge was ensuring secure communication between the blockchain layer and the user interface while maintaining performance. Another challenge involved designing scalable database schemas that could track blockchain transactions efficiently. The project strengthened skills in decentralized system design, API integration, and real-time data handling.
+**Smart contract integration** — programmable rules and automated workflows execute on chain,
+removing manual steps from transaction handling.
+
+**Authentication and authorisation** — role-based access separates users from administrators, with
+permissions enforced server-side rather than in the interface.
+
+**Real-time visualisation** — blockchain activity and system metrics render graphically, so
+patterns are visible instead of requiring log inspection.
+
+**Audit trail** — every action across the system is logged with actor and timestamp, which is what
+makes the ledger useful to an auditor rather than only to an engineer.
+
+## Tech stack
+
+| Layer | Choice | Why |
+| --- | --- | --- |
+| Backend | Flask, Python | Clean separation between the API surface and the blockchain integration layer |
+| Front-end | React | Component model handles the dense, stateful activity views well |
+| Database | PostgreSQL | Off-chain application data needs relational integrity; the ledger is not a substitute for it |
+
+## Challenges and learnings
+
+The defining problem was consistency across a system that cannot roll back. When a transaction is
+submitted on chain and the database write then fails, the two disagree — and a blockchain gives
+you no way to undo the chain side. The resolution was to make the on-chain record authoritative
+and treat the database as a derived, rebuildable view, with reconciliation as a scheduled task
+rather than an afterthought. Once the database was understood as a projection, most of the
+scary edge cases became ordinary ones.
+
+Secure communication between the chain layer and the interface was harder than expected. Signing
+happens server-side, which means the API has to be the trust boundary completely — an earlier
+approach that let the client sign was rejected during review.
+
+Designing schemas that track ledger activity efficiently was the third lesson. Appending to an
+audit table sounds trivial until it needs to answer "all transactions for this account in this
+range" quickly; that requirement drove the indexing strategy from the start.
 
 ## Outcome
 
-The platform was successfully completed in **December 2023**, providing a secure and transparent blockchain solution. It enabled users to interact confidently with decentralized transactions, improving trust, accountability, and operational efficiency.
+Delivered in **December 2023**. Users transact with verifiable records and administrators get an
+audit trail they can actually read, while the off-chain application data stays reconstructable
+from the ledger rather than being a second, conflicting source of truth.

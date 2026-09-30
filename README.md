@@ -1,91 +1,120 @@
-# Magic Portfolio
+# Noman Ejaz — Portfolio
 
-Magic Portfolio is a simple, clean, beginner-friendly portfolio template. It supports an MDX-based content system for projects and blog posts, an about / CV page and a gallery.
+Personal portfolio and project case-study site for **Noman Ejaz**, a full stack software
+engineer based in Islamabad, Pakistan. Built with Next.js App Router, MDX and the Once UI design
+system, with SEO as a first-class concern rather than an afterthought.
 
-View the demo [here](https://demo.magic-portfolio.com).
+Live: [nomanejz.vercel.app](https://nomanejz.vercel.app)
 
-![Magic Portfolio](public/images/og/home.jpg)
+## Why this site is structured this way
 
-## Getting started
+The site exists to rank and to convert. Every structural decision below serves one of those two
+goals.
 
-**1. Clone the repository**
+| Decision | Reason |
+| --- | --- |
+| One page per intent | `/` (brand + overview), `/services` (hire intent), `/work` (project browsing), `/work/[slug]` (long-tail technology keywords), `/about` (author credibility / E-E-A-T) |
+| `Person` JSON-LD on every page | Connects the site to a real, verifiable human — the prerequisite for ranking on name-based and "hire a developer" queries |
+| `CreativeWork` per project | Projects are work products, not blog posts. Correct structured data is what qualifies them for project and stack keywords |
+| `FAQPage` on `/about` and `/services` | Eligible for rich results and covers long-tail questions that would otherwise never appear in the copy |
+| Canonical + `metadataBase` on every route | Prevents duplicate-content signals from ever reaching Google |
+| Self-referencing canonical URLs | Built by one helper (`src/utils/seo.ts`) so no page can ship a half-configured metadata block |
+| `BasePageConfig.keywords` | Keeps target keywords next to the copy they describe, where they are actually maintained |
+| No blog, no gallery | Thin and duplicate template content was the largest ranking liability. Removed rather than left to be indexed |
+
+## Structure
+
 ```
-git clone https://github.com/once-ui-system/magic-portfolio.git
+src/
+├── app/
+│   ├── layout.tsx           # site-wide metadata, theme bootstrap
+│   ├── page.tsx             # home: hero, capabilities, stats, featured work
+│   ├── about/page.tsx       # bio, experience, skills, FAQ
+│   ├── services/page.tsx    # service groups, process, FAQ, CTA
+│   ├── work/page.tsx        # all projects + technology index
+│   ├── work/[slug]/page.tsx # case study
+│   ├── sitemap.ts           # priority + changeFrequency per route
+│   ├── robots.ts
+│   ├── manifest.ts
+│   ├── icon.svg
+│   ├── not-found.tsx
+│   ├── work/projects/*.mdx  # case studies (content lives here)
+│   └── api/og/generate/     # dynamic social card
+├── components/
+│   ├── JsonLd.tsx           # structured data renderer
+│   ├── ProjectCard.tsx
+│   ├── work/Projects.tsx    # sorted project list
+│   └── mdx.tsx              # MDX component map
+├── resources/
+│   ├── content.tsx          # ALL site copy and page config
+│   ├── once-ui.config.ts    # domain, routes, fonts, style tokens
+│   └── icons.ts
+└── utils/
+    ├── seo.ts               # buildMetadata() — canonical, OG, keywords
+    ├── schema.ts            # JSON-LD node builders
+    ├── utils.ts             # MDX frontmatter reader
+    └── formatDate.ts
 ```
 
-**2. Install dependencies**
+## Adding a project
+
+Create `src/app/work/projects/<slug>.mdx`. Frontmatter is the contract:
+
+```yaml
+---
+title: "Project Name"
+summary: "One or two sentences. This becomes the meta description and the card pitch."
+publishedAt: "2025-11-10"
+role: "Full Stack Developer"
+category: "Web application"
+tags: ["Django", "FastAPI", "PostgreSQL"]   # shown as tags, feeds programmingLanguage schema
+keywords: ["django rest api project", "..."] # long-tail phrases this page targets
+image: "/images/projects/my-project/cover-01.png" # OG image + page hero
+images: ["/images/projects/my-project/cover-01.png", ...]
+link: "https://example.com"   # optional live deployment
+repo: "https://github.com/..." # optional source
+---
+```
+
+Then write the body using these sections: **The problem**, **What I built**, **Tech stack**
+(as a table), **Challenges and learnings**, **Outcome**. Consistency here is deliberate — it is
+what makes the page worth reading, and the "problems and learnings" framing is the part that
+signals real engineering experience rather than marketing copy.
+
+Screenshots go in `public/images/projects/<project-name>/`.
+
+## Changing site copy
+
+All copy lives in `src/resources/content.tsx`. Adding a service, FAQ entry or skill group is a
+data change, not a code change. Update `keywords` alongside the copy so the two never drift.
+
+## Before deploying
+
+1. **Set the real domain.** `src/resources/once-ui.config.ts` → `baseURL`. If you move off the
+   `vercel.app` domain to a real domain, change it there — every canonical URL, sitemap entry and
+   JSON-LD `@id` derives from it.
+2. **Add Search Console verification** to `metadata.verification` in `src/app/layout.tsx`.
+3. **Replace `src/app/icon.svg`** if the monogram is not what you want.
+4. **Compress screenshots.** The project PNGs are large; they are served through the Next image
+   optimiser, but smaller source files build faster.
+5. Submit `https://<domain>/sitemap.xml` to Google Search Console.
+
+## Commands
+
 ```
 npm install
+npm run dev        # local dev server
+npm run typecheck  # tsc --noEmit
+npm run lint       # biome check
+npm run build      # production build
 ```
 
-**3. Run dev server**
-```
-npm run dev
-```
+## Credits
 
-**4. Edit config**
-```
-src/resources/once-ui.config.js
-```
+Built on [Magic Portfolio](https://github.com/once-ui-system/magic-portfolio) by Lorant One, which
+in turn uses the [Once UI](https://once-ui.com) design system by [Ora Studio](https://orastudio.com).
+The Once UI component library is MIT licensed.
 
-**5. Edit content**
-```
-src/resources/content.js
-```
-
-**6. Create blog posts / projects**
-```
-Add a new .mdx file to src/app/blog/posts or src/app/work/projects
-```
-
-Magic Portfolio was built with [Once UI](https://once-ui.com) for [Next.js](https://nextjs.org). It requires Node.js v18.17+.
-
-## Documentation
-
-Docs available at: [docs.once-ui.com](https://docs.once-ui.com/docs/magic-portfolio/quick-start)
-
-## Features
-
-### Once UI
-- All tokens, components & features of [Once UI](https://once-ui.com)
-
-### SEO
-- Automatic open-graph and X image generation with next/og
-- Automatic schema and metadata generation based on the content file
-
-### Design
-- Responsive layout optimized for all screen sizes
-- Timeless design without heavy animations and motion
-- Endless customization options through [data attributes](https://once-ui.com/docs/theming)
-
-### Content
-- Render sections conditionally based on the content file
-- Enable or disable pages for blog, work, gallery and about / CV
-- Generate and display social links automatically
-- Set up password protection for URLs
-
-### Localization
-- A localized, earlier version of Magic Portfolio is available with the next-intl library
-- To use localization, switch to the 'i18n' branch
-
-## Creators
-
-Lorant One: [Threads](https://www.threads.net/@lorant.one) / [LinkedIn](https://www.linkedin.com/in/lorant-one/)
-
-## Get involved
-
-- Join the Design Engineers Club on [Discord](https://discord.com/invite/5EyAQ4eNdS) and share your project with us!
-- Deployed your docs? Share it on the [Once UI Hub](https://once-ui.com/hub) too! We feature our favorite apps on our landing page.
-
-## License
-
-Distributed under the CC BY-NC 4.0 License.
-- Attribution is required.
-- Commercial usage is not allowed.
-- You can extend the license to [Dopler CC](https://dopler.app/license) by purchasing a [Once UI Pro](https://once-ui.com/pricing) license.
-
-See `LICENSE.txt` for more information.
-
-## Deploy with Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fonce-ui-system%2Fmagic-portfolio&project-name=portfolio&repository-name=portfolio&redirect-url=https%3A%2F%2Fgithub.com%2Fonce-ui-system%2Fmagic-portfolio&demo-title=Magic%20Portfolio&demo-description=Showcase%20your%20designers%20or%20developer%20portfolio&demo-url=https%3A%2F%2Fdemo.magic-portfolio.com&demo-image=%2F%2Fraw.githubusercontent.com%2Fonce-ui-system%2Fmagic-portfolio%2Fmain%2Fpublic%2Fimages%2Fog%2Fhome.jpg)
+This repository remains under the original **CC BY-NC 4.0** licence — see `LICENSE`. The design
+system, MDX content structure and page scaffolding originate from the template; the content,
+copy, structured data and SEO implementation are original to this site.

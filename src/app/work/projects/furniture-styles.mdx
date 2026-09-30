@@ -1,39 +1,88 @@
 ---
 title: "Furniture Styles"
+summary: "A full-stack eCommerce platform built with Django and MongoDB featuring a product catalogue with filters, cart and checkout, order history and a responsive Bootstrap storefront."
 publishedAt: "2024-09-15"
-summary: "A modern eCommerce platform that allows users to browse, customize, and purchase furniture products through a fast and secure online shopping experience."
+role: "Full Stack Developer"
+category: "eCommerce platform"
+tags:
+  - Python
+  - Django
+  - MongoDB
+  - Bootstrap
+  - JavaScript
+keywords:
+  - furniture ecommerce website
+  - django mongodb ecommerce
+  - online furniture store
+  - product catalogue filter search
+  - shopping cart checkout django
+image: "/images/projects/project-04/cover-01.png"
 images:
   - "/images/projects/project-04/cover-01.png"
   - "/images/projects/project-04/cover-02.png"
   - "/images/projects/project-04/cover-03.png"
   - "/images/projects/project-04/cover-04.png"
-team:
 ---
 
-## Overview
+## The problem
 
-Development of a full-featured eCommerce platform for furniture products, designed to deliver a smooth and engaging online shopping experience. The platform enables users to explore furniture collections, view detailed product information, and securely place orders.
+Furniture is high-consideration and visually driven. Customers need to browse by room, style and
+dimensions, and they abandon the purchase if the product page makes them guess how something fits.
+The brief was a storefront where browsing and filtering feel effortless, and where a customer can
+complete an order without phoning the shop.
 
-## Key Features
+## What I built
 
-- **Product Catalog**: Dynamic listing of furniture products with categories, filters, and detailed product pages.
-- **Shopping Cart System**: Add-to-cart, update quantities, and real-time price calculations.
-- **Order Management**: Complete checkout workflow with order tracking and order history.
-- **User Accounts**: User registration, login, and profile management system.
-- **Admin Dashboard**: Backend panel for managing products, categories, inventory, and orders.
-- **Responsive Design**: Mobile-friendly UI optimized for all screen sizes.
+A Django storefront where the catalogue is filterable, the product pages answer sizing questions
+before they are asked, and checkout is self-service.
 
-## Technologies Used
+**Product catalogue** — furniture organised by category with filters on the attributes customers
+actually search by, plus detailed product pages carrying dimensions and materials.
 
-- **Django**: Backend framework for building secure business logic and APIs.
-- **Bootstrap**: For responsive layout and prebuilt UI components.
-- **JavaScript**: To handle dynamic front-end interactions.
-- **MongoDB**: Used for flexible and scalable data storage.
+**Shopping cart** — add to cart, adjust quantities and live price calculation, with the cart
+persisting across sessions and devices.
 
-## Challenges and Learnings
+**Order management** — complete checkout with order tracking and full order history, so customers
+can revisit a purchase without contacting support.
 
-One of the main challenges was integrating Django with MongoDB while maintaining data consistency for orders and inventory. Performance optimization and handling real-time cart updates were key learning points. The project improved skills in database modeling and full-stack architecture.
+**User accounts** — registration, login and profile management, which is what makes order history
+possible in the first place.
+
+**Admin dashboard** — products, categories, inventory and orders managed from a backend panel
+rather than a database console.
+
+**Responsive design** — a mobile-first interface across catalogue, product page and checkout,
+because furniture browsing happens on phones as often as on desktops.
+
+## Tech stack
+
+| Layer | Choice | Why |
+| --- | --- | --- |
+| Backend | Django, Python | Strong admin tooling out of the box and a reliable ORM layer for the business rules behind pricing and stock |
+| Database | MongoDB | Product documents carry wide, frequently changing attribute sets; storing them as documents avoided constant schema migration |
+| Front-end | Bootstrap, JavaScript | Consistent responsive components across a large catalogue without a heavy custom design system |
+
+## Challenges and learnings
+
+The defining challenge was running Django against MongoDB while keeping orders and inventory
+consistent. Document storage makes product variety easy and transactional guarantees hard, and
+inventory is exactly the case that needs them — two customers cannot buy the last chair.
+
+The resolution was to keep products in MongoDB, where they genuinely benefit, and move order and
+inventory data to a transactional store so stock decrements happen atomically. Accepting two data
+stores was less elegant than one, and considerably more correct.
+
+Real-time cart updates were the second problem. Naively reloading totals on every interaction made
+the interface feel slow and lost state under rapid input. Calculating totals server-side on
+authoritative state, rather than trusting client-side arithmetic, made the cart both fast and
+correct.
+
+Performance tuning mattered at catalogue scale. Filtering without indexes degraded as the range
+grew, so the frequently filtered attributes were indexed and the category page constrained its
+queries deliberately rather than returning the whole collection and filtering in the view.
 
 ## Outcome
 
-The platform successfully launched in **2024** and provided a smooth, reliable online shopping experience for users. It helped streamline the online buying process for furniture businesses and improved customer engagement and conversion rates.
+Delivered in **2024**. The business sells online end to end, customers can filter and order
+without contacting the shop, and the catalogue can grow without schema changes for every new
+furniture attribute.

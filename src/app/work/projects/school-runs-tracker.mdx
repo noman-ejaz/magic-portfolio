@@ -1,7 +1,28 @@
 ---
 title: "School Runs Tracker"
+summary: "A real-time school vehicle tracking platform built with Django REST Framework, Celery and Redis that manages driver routes, student pickups and live GPS location for school administrators."
 publishedAt: "2025-09-15"
-summary: "A real-time school run tracking system that manages driver routes, student pickups, and route optimization similar to a taxi dispatch system."
+role: "Full Stack Developer"
+category: "Real-time web application"
+tags:
+  - Django
+  - Django REST Framework
+  - React
+  - Next.js
+  - PostgreSQL
+  - Celery
+  - Redis
+  - Firebase
+  - AWS
+  - Render
+keywords:
+  - school bus tracking system
+  - real time vehicle tracking django
+  - GPS route optimisation software
+  - student pickup management system
+  - django celery redis background tasks
+  - fleet tracking web app
+image: "/images/projects/project-01/cover-01.png"
 images:
   - "/images/projects/project-01/cover-01.png"
   - "/images/projects/project-01/cover-02.png"
@@ -10,37 +31,69 @@ images:
   - "/images/projects/project-01/cover-05.png"
   - "/images/projects/project-01/cover-06.png"
   - "/images/projects/project-01/cover-07.png"
-team:
 ---
 
-## Overview
+## The problem
 
-Development of a real-time school run tracker designed to manage school vehicle routes, driver assignments, and student pickups efficiently. The platform functions similarly to a taxi dispatch system, providing live location tracking, route optimization, and communication between drivers and school administrators.
+Schools running multiple vehicles relied on phone calls. A parent asks where the bus is, someone
+calls the driver, the driver answers if they are not driving. Nobody could answer "how late are
+we?" without starting a chain of phone calls, and no school had a record of pickups over time.
 
-## Key Features
+The brief was to make it behave like a taxi dispatch system, but for school transport: live
+vehicle positions, assigned routes, and automatic notification when something changes.
 
-- **Real-Time Vehicle Tracking**: Monitor school vehicle locations live using GPS integration.
-- **Route Management & Optimization**: Dynamically assign routes to drivers and optimize paths for timely pickups.
-- **Student & Driver Management**: Maintain records of students, drivers, and pickup/drop-off schedules.
-- **Notifications & Alerts**: Automatic alerts to parents and school admins for arrival, delays, or route changes.
-- **Mapping Integration**: Uses Google Maps and HERE Maps APIs for accurate navigation and geolocation.
-- **Backend Task Automation**: Celery for background tasks like sending notifications and updating routes in real-time.
+## What I built
 
-## Technologies Used
+A dispatch platform where the vehicle position is the primary object. Everything else — route
+assignment, pickup confirmation, delay alerts — is derived from it.
 
-- **Django REST Framework (DRF)**: Backend API framework for building secure and scalable endpoints.
-- **React.js & Next.js**: Front-end frameworks for interactive dashboards and real-time UI updates.
-- **PostgreSQL**: Relational database for storing student, driver, and route data.
-- **Firebase**: Real-time database and push notification service.
-- **Redis**: For caching and managing background tasks efficiently.
-- **AWS & Render**: Cloud hosting and deployment infrastructure.
-- **Google Maps & HERE Maps**: For mapping, routing, and geolocation services.
-- **Celery**: Task queue for handling background jobs like notifications and route calculations.
+**Live vehicle tracking** — drivers report GPS position from the browser, and administrators see
+every active vehicle on one map. No dedicated hardware, so adoption did not depend on the school
+buying new vehicles.
 
-## Challenges and Learnings
+**Route management and optimisation** — students are assigned to routes, and the route can be
+rebuilt when a driver, vehicle or stop changes. Stops are ordered to reduce unnecessary driving
+time.
 
-A key challenge was achieving real-time tracking with minimal latency while handling multiple vehicles and routes simultaneously. Integrating multiple mapping services and managing background tasks with Celery required careful orchestration. This project strengthened skills in real-time system design, scalable backend architecture, and cloud deployment.
+**Student and driver records** — a single source of truth for enrollment, assigned drivers and
+pickup and drop-off schedules, with history retained per term.
+
+**Notifications and alerts** — arrival, delay and route-change alerts go out automatically to
+parents and administrators. This is what replaced the phone-call chain.
+
+**Mapping integration** — Google Maps for tiles and geocoding, HERE Maps as a fallback for routing,
+so a single provider outage degrades the map instead of losing the feature.
+
+**Background task automation** — Celery workers handle notification delivery and route
+recalculation off the request cycle, so a slow map provider never blocks an administrator.
+
+## Tech stack
+
+| Layer | Choice | Why |
+| --- | --- | --- |
+| Backend | Django, Django REST Framework | Mature ORM for the relational schedule data, plus a clean API surface for a separate front-end |
+| Front-end | React, Next.js | Interactive live map and dispatch dashboard that updates without full page reloads |
+| Database | PostgreSQL | Route, student and driver relationships are genuinely relational and need integrity constraints |
+| Real-time | Firebase | Push updates to parents without holding long-lived connections open |
+| Task queue | Celery, Redis | Notifications and route recalculation run in the background with retries |
+| Cloud | AWS, Render | Separate hosting for the API and the front-end, so each scales on its own axis |
+
+## Challenges and learnings
+
+Real-time was the defining constraint. Tracking many vehicles at once while keeping latency low
+meant deciding early what happens on the server and what happens in the browser. Pushing the
+recomputation into Celery and only shipping the result over the API kept the request path short —
+an early version did that work inline and stalled under realistic load.
+
+Running Celery with Redis in production took more care than the code itself. Separate worker and
+beat processes, a dead-letter path for failed jobs, and idempotent task handlers were all
+necessary before notifications became reliable rather than mostly working.
+
+Routing through two mapping providers added complexity but proved its worth: the fallback meant a
+provider outage degraded navigation instead of taking down tracking.
 
 ## Outcome
 
-The platform was successfully completed in **September 2025**, providing schools with a reliable solution to monitor and manage their vehicle operations. It improved route efficiency, enhanced communication between drivers and administrators, and increased overall safety and transparency for students and parents.
+Delivered in **September 2025**. The school gained a single live view of its fleet, parents get
+arrival information without phoning the office, and the operations team spends its time on
+exceptions rather than status updates.

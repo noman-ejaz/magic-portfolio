@@ -6,7 +6,8 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": true,
+    "ignore": [".next", "node_modules", "out", "build", "dist"]
   },
   "formatter": {
     "enabled": true,
@@ -16,7 +17,12 @@
   },
   "linter": {
     "enabled": true,
-    "rules": { "recommended": true }
+    "rules": {
+      "recommended": true,
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      }
+    }
   },
   "javascript": {
     "formatter": {

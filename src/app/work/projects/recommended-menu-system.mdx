@@ -1,7 +1,23 @@
 ---
 title: "Recommended Menu System"
+summary: "An AI-assisted restaurant menu platform built with Next.js and PostgreSQL that manages menus, tracks live orders and recommends dishes based on each customer's order history."
 publishedAt: "2025-11-10"
-summary: "A smart menu recommender system for restaurants that manages menus, tracks customer orders, and provides personalized recommendations."
+role: "Full Stack Developer"
+category: "AI web application"
+tags:
+  - Next.js
+  - TypeScript
+  - PostgreSQL
+  - AWS
+  - Supabase
+  - AI Systems
+keywords:
+  - restaurant menu management system
+  - AI menu recommendation system
+  - next.js postgres application
+  - food ordering web app
+  - restaurant analytics dashboard
+image: "/images/projects/project-02/cover-01.png"
 images:
   - "/images/projects/project-02/cover-01.png"
   - "/images/projects/project-02/cover-02.png"
@@ -10,33 +26,64 @@ images:
   - "/images/projects/project-02/cover-05.png"
   - "/images/projects/project-02/cover-06.png"
   - "/images/projects/project-02/cover-07.png"
-team:
 ---
 
-## Overview
+## The problem
 
-Development of a smart menu recommender system designed to help restaurants manage their menus efficiently while providing personalized recommendations to customers. The system tracks customer orders, generates insights, and enables restaurants to optimize offerings and improve customer satisfaction.
+Restaurants that write their menu by hand lose the one piece of data that actually tells them
+what to cook. Order history is the signal — but it is buried in paper, WhatsApp threads and a
+cash register nobody wants to open.
 
-## Key Features
+The client needed three things in one place: a menu they could change themselves, an honest
+record of what was ordered, and recommendations that used that record instead of guesswork.
 
-- **Menu Management**: Administrators can create, update, and categorize menu items easily with a responsive interface.
-- **Customer Order Tracking**: Records customer orders and generates insights for popular items and trends.
-- **Personalized Recommendations**: Suggests menu items to customers based on their previous orders and preferences.
-- **Analytics Dashboard**: Provides real-time reports and visualizations for restaurant managers to monitor performance.
-- **Cloud-Hosted Backend**: Reliable server infrastructure to ensure high availability and smooth operations.
+## What I built
 
-## Technologies Used
+A menu and order platform where the recommendation engine sits on top of the order data rather
+than beside it. Every completed order feeds a customer preference profile, and that profile is
+what drives the suggestions.
 
-- **Next.js**: Front-end framework for building fast and interactive user interfaces.
-- **TypeScript**: For strong type-checking and maintainable front-end code.
-- **PostgreSQL**: Relational database for storing menus, orders, and customer data.
-- **AWS**: Cloud infrastructure for hosting, storage, and scalability.
-- **Supabase**: Backend-as-a-service platform for authentication, real-time updates, and API management.
+**Menu management** — restaurant staff create, edit and categorise dishes from a responsive
+interface without touching the database. Availability toggles propagate to the customer view
+immediately.
 
-## Challenges and Learnings
+**Order tracking** — orders are recorded with their items, timestamps and totals. The data is
+queryable from day one, which is what makes everything else possible.
 
-One key challenge was implementing personalized recommendations efficiently while maintaining fast query performance. Another challenge involved integrating Supabase and AWS services seamlessly to provide real-time updates for orders. The project strengthened skills in full-stack development, cloud deployment, and data-driven recommendation systems.
+**Personalised recommendations** — the engine scores dishes against a customer's own order
+history and past preferences. Recommendations are explainable: every suggestion can be traced
+back to the order that produced it.
+
+**Analytics dashboard** — restaurant managers get live views of best sellers, slow movers and
+demand trends, rather than a static export they have to interpret themselves.
+
+**Cloud-hosted backend** — the service runs on AWS with Supabase handling authentication and
+real-time updates, so prices and availability change without a refresh.
+
+## Tech stack
+
+| Layer | Choice | Why |
+| --- | --- | --- |
+| Front-end | Next.js, TypeScript | Server rendering for fast first paint, TypeScript to keep the recommendation logic safe as it grows |
+| Backend | Supabase | Authentication and real-time order updates without maintaining an auth service |
+| Database | PostgreSQL | Order history needs real relational queries; recommendations depend on aggregating over them |
+| Cloud | AWS | Hosting, storage and scaling so peak ordering hours do not degrade the experience |
+
+## Challenges and learnings
+
+The hard part was performance. A naive recommendation query re-scanned the whole order table on
+every menu load, which is fine with a hundred orders and unusable with fifty thousand. Moving
+the scoring into indexed queries and pre-computing customer preference profiles brought the
+response back to interactive range.
+
+Integrating Supabase and AWS cleanly was the second challenge. Two services, two auth models and
+two sets of environment variables is a reliable source of subtle bugs. Pinning down a single
+source of truth for the session early — and treating the ORM layer as the only thing that talks
+to the database — removed an entire category of problems.
 
 ## Outcome
 
-The system was successfully completed in **November 2025**, providing restaurants with a modern solution to manage menus, improve customer engagement, and make data-driven decisions. It enhanced operational efficiency, increased customer satisfaction, and delivered personalized dining experiences.
+Delivered in **November 2025**. The restaurant now runs its own menu without developer help,
+sees which dishes actually sell, and gets suggestions grounded in real customer behaviour rather
+than intuition. Order handling moved out of a manual process and into a system the business can
+measure.
